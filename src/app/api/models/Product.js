@@ -1,17 +1,25 @@
 import mongoose from 'mongoose';
 
 const ProductSchema = new mongoose.Schema({
+    categoria: {
+        type: String,
+        required: true
+    },
     modelo: {
         type: String,
         required: true
     },
     precio: {
-        type: Number,
+        type: Array,
         required: true
     },
-    fabricante: {
+    marca: {
         type: String,
         required: true
+    },
+    caracteristicas:  {
+        type: Array,
+        required: false
     }
 }, {
     timestamps: true,

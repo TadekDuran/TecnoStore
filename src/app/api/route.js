@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/app/api/utils/database";
 
-export async function GET() {
+export const dynamic = 'force-dynamic' // defaults to auto
+ 
+export async function GET(request) {
   await connectDB();
-  return NextResponse.json({
-    message: "MongoDB connected",
-  });
+  return new NextResponse("MongoDB connected", {
+    status: 200,
+  })
 }
