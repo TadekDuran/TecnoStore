@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const Navbar = () => {
   const links = [
@@ -16,7 +17,9 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 flex h-11 justify-center bg-white/[.8]">
       <div className="container flex items-center justify-between">
-        <Link href={"/"}>TS</Link>
+        <Link href={"/"}>
+          <Image src="/logo.png" alt="Logo" width={64} height={64} />
+        </Link>
         <div className="flex gap-4">
           {links.map((link) => (
             <Link
