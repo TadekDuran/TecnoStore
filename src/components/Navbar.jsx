@@ -15,10 +15,10 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="sticky top-0 flex h-11 justify-center bg-white/[.8]">
+    <nav className="sticky top-0 flex h-[7vh] justify-center bg-black">
       <div className="container flex items-center justify-between">
         <Link href={"/"}>
-          <Image src="/logo.png" alt="Logo" width={64} height={64} />
+          <Image src="/logo.webp" alt="Logo" width={64} height={64} />
         </Link>
         <div className="flex gap-4">
           {links.map((link) => (
