@@ -1,20 +1,9 @@
 import React from "react";
 
-async function getData() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products`,
-  );
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
-}
-
-const ProductsCards = async () => {
-  const data = await getData();
+const ProductsCards = ({ products }) => {
   return (
     <div className="flex flex-wrap justify-center gap-3 rounded-tl-lg bg-[#080404] p-4 text-[#080404]">
-      {data.map((product) => (
+      {products.map((product) => (
         <div
           key={product._id}
           className="flex h-80 w-64 flex-col items-center justify-center rounded-lg bg-white p-2 font-bold"
