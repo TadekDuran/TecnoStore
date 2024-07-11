@@ -1,5 +1,6 @@
 import React from "react";
 import { Slider, Select, Option } from "@mui/joy";
+
 const Filters = () => {
   const marks = [
     {
@@ -11,9 +12,10 @@ const Filters = () => {
       label: "$2000",
     },
   ];
+
   return (
     <div className="sticky top-[7vh] h-[93vh] w-72 bg-black p-3">
-      <section>
+      <section className="p-3">
         <p>Marca</p>
         <Select placeholder="Selecciona una marca">
           <Option value="Apple">Apple</Option>
@@ -22,7 +24,8 @@ const Filters = () => {
           <Option value="Xiaomi">Xiaomi</Option>
         </Select>
       </section>
-      <section>
+      <section className="p-3">
+        <p>Precio</p>
         <Slider
           color="primary"
           size="md"
