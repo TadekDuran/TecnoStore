@@ -6,7 +6,7 @@ const Smartphones = () => {
   return (
     <div className="flex min-h-[93vh]">
       <Filters />
-      <ProductsCards category={"Smartphones"} />
+      <ProductsCards />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 
-async function getData(category) {
+async function getData() {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products`,
   );
@@ -10,7 +10,7 @@ async function getData(category) {
   return res.json();
 }
 
-const ProductsCards = async ({ category }) => {
+const ProductsCards = async () => {
   const data = await getData();
   return (
     <div className="flex flex-wrap justify-center gap-3 rounded-tl-lg bg-[#080404] p-4 text-[#080404]">
