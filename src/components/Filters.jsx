@@ -1,26 +1,38 @@
 import React from "react";
-
+import { Slider, Select, Option } from "@mui/joy";
 const Filters = () => {
+  const marks = [
+    {
+      value: 100,
+      label: "$100",
+    },
+    {
+      value: 2000,
+      label: "$2000",
+    },
+  ];
   return (
     <div className="sticky top-[7vh] h-[93vh] w-72 bg-black p-3">
       <section>
-        <p>Categoria</p>
-        <select className="w-full text-black" name="Marca">
-          <option value="value1">Samsung</option>
-          <option value="value2" selected>
-            Apple
-          </option>
-          <option value="value3">Xiaomi</option>
-          <option value="value3">Motorola</option>
-        </select>
+        <p>Marca</p>
+        <Select placeholder="Selecciona una marca">
+          <Option value="Apple">Apple</Option>
+          <Option value="Samsung">Samsung</Option>
+          <Option value="Motorola">Motorola</Option>
+          <Option value="Xiaomi">Xiaomi</Option>
+        </Select>
       </section>
       <section>
-        <p>Precio</p>
-        <div className="flex gap-2">
-          <p>$100</p>
-          <input type="range" min="100" max="1000" />
-          <p>$1000</p>
-        </div>
+        <Slider
+          color="primary"
+          size="md"
+          aria-label="precio"
+          marks={marks}
+          step={50}
+          min={100}
+          max={2000}
+          valueLabelDisplay="auto"
+        />
       </section>
     </div>
   );

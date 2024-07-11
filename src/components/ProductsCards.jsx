@@ -12,7 +12,6 @@ async function getData(category) {
 
 const ProductsCards = async ({ category }) => {
   const data = await getData();
-  console.log(data);
   return (
     <div className="flex flex-wrap justify-center gap-3 rounded-tl-lg bg-[#080404] p-4 text-[#080404]">
       {data.map((product) => (
