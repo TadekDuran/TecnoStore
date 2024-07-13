@@ -1,31 +1,6 @@
-"use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 
-const ProductsCards = () => {
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products`,
-        );
-
-        if (!res.ok) {
-          const errorText = await res.text();
-          throw new Error(`Error fetching products: ${errorText}`);
-        }
-
-        const data = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error in getProducts:", error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
+const ProductsCards = ({products}) => {
   return (
     <div className="flex flex-wrap justify-center gap-3 rounded-tl-lg bg-[#080404] p-4 text-[#080404]">
       {products.map((product) => (

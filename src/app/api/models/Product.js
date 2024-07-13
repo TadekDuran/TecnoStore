@@ -10,7 +10,7 @@ const ProductSchema = new mongoose.Schema({
         required: true
     },
     precio: {
-        type: Array,
+        type: Number,
         required: true
     },
     marca: {
