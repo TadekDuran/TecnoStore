@@ -1,45 +1,108 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Slider, Select, Option } from "@mui/joy";
+import React, { useState } from "react";
+import {
+  Select,
+  Option,
+  FormControl,
+  FormLabel,
+  Input,
+  Box,
+  Button,
+  IconButton,
+} from "@mui/joy";
 
-const Filters = () => {
+const Filters = ({ products, fetchProducts }) => {
+  const [queries, setQueries] = useState("categoria=Smartphone");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
-  const marks = [
+  const brands = [
     {
-      value: 100,
-      label: "$100",
+      id: 1,
+      value: "Samsung",
     },
     {
-      value: 1000,
-      label: "$1000",
+      id: 2,
+      value: "Motorola",
+    },
+    {
+      id: 3,
+      value: "Xiaomi",
     },
   ];
 
+  function changeQueries(newQueries) {
+    const updateQueries = `${queries}&${newQueries}`;
+    fetchProducts(updateQueries);
+  }
+
+  function deleteFilters() {
+    setMinPrice("");
+    setMaxPrice("");
+    setQueries("categoria=Smartphone");
+  }
+
   return (
-    <div className="sticky top-[7vh] h-[93vh] w-72 bg-black p-3">
-      <section>
-        <p>Marca</p>
-        <Select
-          placeholder="Selecciona una marca"
-        >
-          <Option value="Apple">Apple</Option>
-          <Option value="Samsung">Samsung</Option>
-          <Option value="Motorola">Motorola</Option>
-          <Option value="Xiaomi">Xiaomi</Option>
+    <div className="sticky top-[7vh] flex h-[93vh] w-72 flex-col gap-4 bg-black p-2">
+      <FormControl>
+        <FormLabel>Marca</FormLabel>
+        <Select size="sm" placeholder="Selecciona una marca">
+          {brands.map(({ value }) => (
+            <Option
+              key={value}
+              value={value}
+              onClick={() => {
+                changeQueries(`marca=${value}`);
+              }}
+            >
+              {value}
+            </Option>
+          ))}
         </Select>
-      </section>
-      <section>
-        <Slider
-          defaultValue={1000}
-          min={100}
-          max={1000}
-          color="primary"
-          size="md"
-          aria-label="precio"
-          marks={marks}
-          valueLabelDisplay="on"
-        />
-      </section>
+      </FormControl>
+      <FormControl>
+        <FormLabel>Precio</FormLabel>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Input
+            size="sm"
+            placeholder="Mínimo"
+            type="number"
+            value={minPrice}
+            onChange={(event) => setMinPrice(Number(event.target.value))}
+          />
+          <Input
+            size="sm"
+            placeholder="Máximo"
+            type="number"
+            value={maxPrice}
+            onChange={(event) => setMaxPrice(Number(event.target.value))}
+          />
+          <IconButton
+            disabled={maxPrice === "" && minPrice === ""}
+            onClick={() =>
+              changeQueries(`precioMin=${minPrice}&precioMax=${maxPrice}`)
+            }
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              className="lucide lucide-chevron-right"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </IconButton>
+        </Box>
+      </FormControl>
+      <Button size="sm" color="danger" variant="plain" onClick={deleteFilters}>
+        Borrar filtros
+      </Button>
     </div>
   );
 };

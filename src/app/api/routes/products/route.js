@@ -5,7 +5,7 @@ import Product from "../../models/Product";
 export async function GET(request) {
   try {
     await connectDB();
-    const searchParams = request.nextUrl.searchParams
+    const searchParams = request.nextUrl.searchParams;
     const category = searchParams.get("categoria");
     const marca = searchParams.get("marca");
     const precioMin = searchParams.get("precioMin");
@@ -13,8 +13,10 @@ export async function GET(request) {
     let query = {};
     if (category) query.categoria = category;
     if (marca) query.marca = marca;
-    if (precioMin) query.precio = { ...query.precio, $gte: parseInt(precioMin) };
-    if (precioMax) query.precio = { ...query.precio, $lte: parseInt(precioMax) };
+    if (precioMin)
+      query.precio = { ...query.precio, $gte: parseInt(precioMin) };
+    if (precioMax)
+      query.precio = { ...query.precio, $lte: parseInt(precioMax) };
     const products = await Product.find(query);
     return new Response(JSON.stringify(products), {
       status: 200,
@@ -46,9 +48,11 @@ export async function POST(request) {
   }
 }
 
-export async function getData(category) {
+export async function getData(queries) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/routes/products?categoria=${category}`);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products?${queries}`,
+    );
     if (!res.ok) {
       throw new Error("Failed to fetch data");
     }

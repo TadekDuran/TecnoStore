@@ -1,8 +1,8 @@
 import React from "react";
 
-const ProductsCards = ({products}) => {
+const ProductsCards = ({ products }) => {
   return (
-    <div className="flex flex-wrap justify-center gap-3 rounded-tl-lg bg-[#080404] p-4 text-[#080404]">
+    <div className="flex w-full flex-wrap justify-center gap-3 rounded-tl-lg bg-[#080404] p-4 text-[#080404]">
       {products.map((product) => (
         <div
           key={product._id}

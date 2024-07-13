@@ -1,5 +1,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import InitColorSchemeScript from "@mui/joy/InitColorSchemeScript";
+import { CssVarsProvider } from "@mui/joy/styles";
+import CssBaseline from "@mui/joy/CssBaseline";
 
 import Navbar from "@/components/Navbar";
 
@@ -14,8 +17,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es" suppressHydrationWarning={true}>
       <body className={`${inter.className} h-screen bg-black text-white`}>
-        <Navbar />
-        {children}
+        <InitColorSchemeScript />
+        <CssVarsProvider>
+          <CssBaseline />
+          <Navbar />
+          {children}
+        </CssVarsProvider>
       </body>
     </html>
   );
