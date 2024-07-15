@@ -10,13 +10,18 @@ export async function GET(request) {
     const marca = searchParams.get("marca");
     const precioMin = searchParams.get("precioMin");
     const precioMax = searchParams.get("precioMax");
+    const almacenamiento = searchParams.get("almacenamiento")
     let query = {};
-    if (category) query.categoria = category;
-    if (marca) query.marca = marca;
+    if (category) 
+      query.categoria = category;
+    if (marca) 
+      query.marca = marca;
     if (precioMin)
       query.precio = { ...query.precio, $gte: parseInt(precioMin) };
     if (precioMax)
       query.precio = { ...query.precio, $lte: parseInt(precioMax) };
+    if (almacenamiento)
+      query[caracteristicas.almacenamiento] = almacenamiento;
     const products = await Product.find(query);
     return new Response(JSON.stringify(products), {
       status: 200,

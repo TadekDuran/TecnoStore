@@ -31,6 +31,25 @@ const Filters = ({ products, fetchProducts }) => {
     },
   ];
 
+  const storage = [
+    {
+      id: 1,
+      value: "128GB",
+    },
+    {
+      id: 2,
+      value: "256GB",
+    },
+    {
+      id: 3,
+      value: "512GB",
+    },
+    {
+      id: 4,
+      value: "1TB"
+    }
+  ];
+
   function changeQueries(newQueries) {
     const updateQueries = `${queries}&${newQueries}`;
     fetchProducts(updateQueries);
@@ -99,6 +118,22 @@ const Filters = ({ products, fetchProducts }) => {
             </svg>
           </IconButton>
         </Box>
+      </FormControl>
+      <FormControl>
+        <FormLabel>Almacenamiento</FormLabel>
+        <Select size="sm" placeholder="Selecciona un almacenamiento">
+          {storage.map(({ value }) => (
+            <Option
+              key={value}
+              value={value}
+              onClick={() => {
+                changeQueries(`almacenamiento=${value}`);
+              }}
+            >
+              {value}
+            </Option>
+          ))}
+        </Select>
       </FormControl>
       <Button size="sm" color="danger" variant="plain" onClick={deleteFilters}>
         Borrar filtros

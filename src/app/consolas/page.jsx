@@ -1,9 +1,31 @@
-import React from 'react'
+"use client";
+import React, { useState, useEffect } from "react";
+import ProductsCards from "@/components/ProductsCards";
+import Filters from "@/components/Filters";
+import { getData } from "../api/routes/products/route";
 
 const Consolas = () => {
-  return (
-    <div>Consolas</div>
-  )
-}
+  const [products, setProducts] = useState([]);
 
-export default Consolas
+  const fetchProducts = async (category) => {
+    try {
+      const data = await getData(category);
+      setProducts(data);
+    } catch (error) {
+      console.error("Error in getProducts:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts("categoria=Consola");
+  }, []);
+
+  return (
+    <div className="flex min-h-[93vh]">
+      <Filters products={products} fetchProducts={fetchProducts} />
+      <ProductsCards products={products} />
+    </div>
+  );
+};
+
+export default Consolas;
