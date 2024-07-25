@@ -42,3 +42,5 @@ export async function DELETE(request, { params }) {
     });
   }
 }
+
+/* Implementar funcion getProduct con id como parametro */

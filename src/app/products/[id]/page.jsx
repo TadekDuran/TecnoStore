@@ -5,17 +5,20 @@ import { useEffect, useState } from "react";
 const ProductPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [existProduct, setExistProduct] = useState(false);
 
   useEffect(() => {
     if (id) {
+      /* buena implementacion de condicional para que realize el fetch solo si el id existe,implementar esta logica en el componente visual tambien */
+      /* importar la funcion del route de [id] de la API */
       const fetchProduct = async () => {
-        let url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products/${id}`
+        let url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products/${id}`;
         console.log(url);
-        const data = await fetch(
-          url,
-        );
-        console.log(data[0]);
-        setProduct(data[0]);
+        const res = await fetch(url);
+        console.log(res);
+        const data = await res.json();
+        console.log(data);
+        setProduct(data);
       };
       fetchProduct();
     }
