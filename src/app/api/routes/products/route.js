@@ -61,8 +61,7 @@ export async function getData(queries) {
     if (!res.ok) {
       throw new Error("Failed to fetch data");
     }
-    const data = await res.json();
-    return data;
+    return res.json();
   } catch (error) {
     console.error("Error fetching filtered data:", error);
     throw error;

@@ -5,7 +5,7 @@ const ProductsCards = ({ products }) => {
   return (
     <div className="flex w-full flex-wrap justify-center gap-3 rounded-tl-lg bg-[#080404] p-4 text-[#080404]">
       {products.map((product) => (
-        <Link key={product._id} href={`/products/${product._id}`}>
+        <Link key={product._id} href={`/product/${product._id}`}>
         <div className="flex h-80 w-64 flex-col items-center justify-center rounded-lg bg-white p-2 font-bold cursor-pointer">
           <img
             className="h-4/5 object-contain"

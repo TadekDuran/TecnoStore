@@ -43,4 +43,18 @@ export async function DELETE(request, { params }) {
   }
 }
 
+export async function getProduct(id) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products/${id}`,
+    );
+    if (!res.ok) {
+      throw new Error("Failed to fetch product.");
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw error;
+  }
+}
 /* Implementar funcion getProduct con id como parametro */
