@@ -27,3 +27,14 @@ body::-webkit-scrollbar-thumb {
     scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
   }
 }
+
+.image-gallery-thumbnail,
+.image-gallery-thumbnail.active,
+.image-gallery-thumbnail:focus {
+
+}
+
+.image-gallery-svg {
+  height: 80px !important;
+  width: 40px !important;
+}
