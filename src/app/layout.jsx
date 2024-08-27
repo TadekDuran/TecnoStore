@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import InitColorSchemeScript from "@mui/joy/InitColorSchemeScript";
-import { CssVarsProvider } from "@mui/joy/styles";
+import { CssVarsProvider, extendTheme } from "@mui/joy/styles";
 import CssBaseline from "@mui/joy/CssBaseline";
 
 import Navbar from "@/components/Navbar";

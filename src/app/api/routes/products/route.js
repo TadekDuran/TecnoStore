@@ -7,21 +7,18 @@ export async function GET(request) {
     await connectDB();
     const searchParams = request.nextUrl.searchParams;
     const category = searchParams.get("categoria");
-    const marca = searchParams.get("marca");
+    const fabricante = searchParams.get("fabricante");
     const precioMin = searchParams.get("precioMin");
     const precioMax = searchParams.get("precioMax");
-    const almacenamiento = searchParams.get("almacenamiento")
     let query = {};
     if (category) 
       query.categoria = category;
-    if (marca) 
-      query.marca = marca;
+    if (fabricante) 
+      query.fabricante = fabricante;
     if (precioMin)
       query.precio = { ...query.precio, $gte: parseInt(precioMin) };
     if (precioMax)
       query.precio = { ...query.precio, $lte: parseInt(precioMax) };
-    if (almacenamiento)
-      query[caracteristicas.almacenamiento] = almacenamiento;
     const products = await Product.find(query);
     return new Response(JSON.stringify(products), {
       status: 200,
@@ -44,7 +41,6 @@ export async function POST(request) {
     const data = await request.json();
     const newProduct = new Product(data);
     const savedProduct = await newProduct.save();
-    console.log(savedProduct);
     return NextResponse.json(savedProduct);
   } catch (error) {
     return NextResponse.json(error.message, {

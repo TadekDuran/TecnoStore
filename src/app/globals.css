@@ -28,13 +28,14 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
-.image-gallery-thumbnail,
-.image-gallery-thumbnail.active,
-.image-gallery-thumbnail:focus {
-
+.image-gallery-thumbnail  {
+  transition: border .1s ease-out !important;
 }
 
-.image-gallery-svg {
-  height: 80px !important;
-  width: 40px !important;
+.image-gallery-thumbnail.active, .image-gallery-thumbnail:hover {
+  border: 2px solid #2696ff !important;
+}
+
+.image-gallery-thumbnail, .image-gallery-thumbnail-image  {
+  border-radius: 10%;
 }
