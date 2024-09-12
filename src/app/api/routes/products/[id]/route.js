@@ -57,4 +57,3 @@ export async function getProduct(id) {
     throw error;
   }
 }
-/* Implementar funcion getProduct con id como parametro */

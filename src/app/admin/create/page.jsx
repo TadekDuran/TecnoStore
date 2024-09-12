@@ -7,13 +7,12 @@ import {
   Typography,
   Button,
   FormControl,
-  FormLabel,
   IconButton,
   Modal,
   ModalDialog,
   Stack,
 } from "@mui/joy";
-import Add from "@mui/icons-material/Add";
+import { CirclePlus, Undo2 } from "lucide-react";
 
 const CreateProduct = () => {
   const [categoria, setCategoria] = useState("");
@@ -125,6 +124,9 @@ const CreateProduct = () => {
 
   return (
     <div>
+      <Button component="a" href="/admin" startDecorator={<Undo2 />}>
+        Regresar
+      </Button>
       <form action="" className="flex flex-col items-center">
         <Typography level="h1">Crear Producto</Typography>
 
@@ -202,7 +204,7 @@ const CreateProduct = () => {
                 setIsModalOpen(true);
                 setError("");
               }}
-              startDecorator={<Add />}
+              startDecorator={<CirclePlus />}
               color="neutral"
             >
               Añadir característica
