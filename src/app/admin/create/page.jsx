@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Input,
   Select,
@@ -8,11 +9,9 @@ import {
   Button,
   FormControl,
   IconButton,
-  Modal,
-  ModalDialog,
   Stack,
 } from "@mui/joy";
-import { CirclePlus, Undo2 } from "lucide-react";
+import { CirclePlus, Trash2, Pencil, Undo2 } from "lucide-react";
 
 const CreateProduct = () => {
   const [categoria, setCategoria] = useState("");
@@ -20,13 +19,8 @@ const CreateProduct = () => {
   const [modelo, setModelo] = useState("");
   const [precio, setPrecio] = useState("");
   const [caracteristicas, setCaracteristicas] = useState([]);
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [newCaracteristica, setNewCaracteristica] = useState({
-    nombre: "",
-    valor: "",
-  });
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,6 +28,7 @@ const CreateProduct = () => {
       alert("Todos los campos son obligatorios");
       return;
     }
+
     const productData = {
       categoria,
       fabricante,
@@ -41,67 +36,58 @@ const CreateProduct = () => {
       precio,
       caracteristicas,
     };
-    console.log(JSON.stringify(productData));
-    
+
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/routes/products",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(productData),
+      const response = await fetch("http://localhost:3000/api/routes/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(productData),
+      });
 
       if (!response.ok) {
         throw new Error("Error en la petición");
       }
 
       const data = await response.json();
-      console.log("Producto creado:", data);
-
-      setCategoria("");
-      setFabricante("");
-      setModelo("");
-      setPrecio("");
-      setCaracteristicas([]);
-      setNewCaracteristica({ nombre: "", valor: "" });
       alert("Producto creado exitosamente");
+      router.push("/admin");
     } catch (error) {
       console.error("Error al crear el producto:", error);
     }
   };
 
-  const handleInputChange = (key, value) => {
-    setNewCaracteristica({ ...newCaracteristica, [key]: value });
+  const handleInputChange = (key, value, index) => {
+    const updatedCaracteristicas = [...caracteristicas];
+    updatedCaracteristicas[index][key] = value;
+    setCaracteristicas(updatedCaracteristicas);
     if (error) setError("");
   };
 
-  const addOrEditCaracteristica = () => {
-    const { nombre, valor } = newCaracteristica;
+  const addCaracteristica = () => {
+    setCaracteristicas([
+      ...caracteristicas,
+      { nombre: "", valor: "", isEditing: true },
+    ]);
+  };
 
+  const saveCaracteristica = (index) => {
+    const { nombre, valor } = caracteristicas[index];
     if (!nombre || !valor) {
-      setError("Ambos campos son obligatorios.");
+      alert("Ambos campos son obligatorios.");
       return;
     }
-    if (editingIndex !== null) {
-      const updatedCaracteristicas = [...caracteristicas];
-      updatedCaracteristicas[editingIndex] = newCaracteristica;
-      setCaracteristicas(updatedCaracteristicas);
-      setEditingIndex(null);
-    } else {
-      setCaracteristicas([...caracteristicas, newCaracteristica]);
-    }
-    setNewCaracteristica({ nombre: "", valor: "" });
-    setIsModalOpen(false);
+    const updatedCaracteristicas = [...caracteristicas];
+    updatedCaracteristicas[index].isEditing = false;
+    setCaracteristicas(updatedCaracteristicas);
+    setError("");
   };
 
   const editCaracteristica = (index) => {
-    setNewCaracteristica(caracteristicas[index]);
-    setEditingIndex(index);
-    setIsModalOpen(true);
+    const updatedCaracteristicas = [...caracteristicas];
+    updatedCaracteristicas[index].isEditing = true;
+    setCaracteristicas(updatedCaracteristicas);
   };
 
   const removeCaracteristica = (index) => {
@@ -127,7 +113,7 @@ const CreateProduct = () => {
       <Button component="a" href="/admin" startDecorator={<Undo2 />}>
         Regresar
       </Button>
-      <form action="" className="flex flex-col items-center">
+      <form onSubmit={handleSubmit} className="flex flex-col items-center">
         <Typography level="h1">Crear Producto</Typography>
 
         <FormControl sx={{ display: "flex" }}>
@@ -184,66 +170,60 @@ const CreateProduct = () => {
             sx={{ mb: 1.5 }}
           />
 
-          <div className="flex w-full flex-col gap-2">
-            <Typography level="h4" sx={{ mb: 0.3 }}>
-              Características
-            </Typography>
-            {caracteristicas.map((caracteristica, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <Typography level="body1">{`${caracteristica.nombre}: ${caracteristica.valor}`}</Typography>
-                <IconButton onClick={() => editCaracteristica(index)}>
-                  Editar
-                </IconButton>
-                <IconButton onClick={() => removeCaracteristica(index)}>
-                  Remover
-                </IconButton>
-              </div>
-            ))}
-            <Button
-              onClick={() => {
-                setIsModalOpen(true);
-                setError("");
-              }}
-              startDecorator={<CirclePlus />}
-              color="neutral"
-            >
-              Añadir característica
-            </Button>
-          </div>
-        </FormControl>
-
-        <Button variant="plain" type="submit" onClick={handleSubmit}>
-          Subir producto
-        </Button>
-      </form>
-
-      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <ModalDialog>
-          <Typography level="h4">
-            {editingIndex !== null ? "Editar" : "Añadir"} Característica
+          <Typography level="h4" sx={{ mb: 0.3 }}>
+            Características
           </Typography>
-          <Stack spacing={2}>
-            <Input
-              placeholder="Nombre de la característica"
-              value={newCaracteristica.nombre}
-              onChange={(e) => handleInputChange("nombre", e.target.value)}
-            />
-            <Input
-              placeholder="Valor"
-              value={newCaracteristica.valor}
-              onChange={(e) => handleInputChange("valor", e.target.value)}
-            />
+          <div className="flex flex-col gap-2 w-full">
+            {caracteristicas.map((caracteristica, index) => (
+              <Stack key={index} direction="row" alignItems="center" spacing={2}>
+                {caracteristica.isEditing ? (
+                  <>
+                    <Input
+                      placeholder="Nombre"
+                      value={caracteristica.nombre}
+                      onChange={(e) =>
+                        handleInputChange("nombre", e.target.value, index)
+                      }
+                    />
+                    <Input
+                      placeholder="Valor"
+                      value={caracteristica.valor}
+                      onChange={(e) =>
+                        handleInputChange("valor", e.target.value, index)
+                      }
+                    />
+                    <Button onClick={() => saveCaracteristica(index)}>
+                      Guardar
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Typography>{`${caracteristica.nombre}: ${caracteristica.valor}`}</Typography>
+                    <IconButton onClick={() => editCaracteristica(index)}>
+                      <Pencil />
+                    </IconButton>
+                  </>
+                )}
+                <IconButton onClick={() => removeCaracteristica(index)}>
+                  <Trash2 />
+                </IconButton>
+              </Stack>
+            ))}
             {error && (
               <Typography level="body2" color="danger">
                 {error}
               </Typography>
             )}
-            <Button onClick={addOrEditCaracteristica}>
-              {editingIndex !== null ? "Guardar cambios" : "Añadir"}
+            <Button startDecorator={<CirclePlus />} onClick={addCaracteristica}>
+              Añadir característica
             </Button>
-          </Stack>
-        </ModalDialog>
-      </Modal>
+          </div>
+        </FormControl>
+
+        <Button type="submit" variant="plain">
+          Subir producto
+        </Button>
+      </form>
     </div>
   );
 };

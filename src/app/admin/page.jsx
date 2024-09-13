@@ -7,6 +7,7 @@ import {
 import { CirclePlus, Trash2, Pencil } from "lucide-react";
 import { getData } from "../api/routes/products/route";
 import DeleteModal from "@/components/DeleteModal";
+import EditModal from "@/components/EditModal";
 
 const AdminPage = () => {
   const fabricantes = [
@@ -33,6 +34,7 @@ const AdminPage = () => {
 
   const [products, setProducts] = useState([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const openDeleteModal = (product) => {
@@ -40,7 +42,13 @@ const AdminPage = () => {
     setIsDeleteModalOpen(true);
   };
 
+  const openEditModal = (product) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
+
   const handleCloseModals = () => {
+    setIsEditModalOpen(false);
     setIsDeleteModalOpen(false);
     setSelectedProduct(null);
   };
@@ -97,6 +105,12 @@ const AdminPage = () => {
 
       <DeleteModal
         isDeleteModalOpen={isDeleteModalOpen}
+        handleCloseModals={handleCloseModals}
+        selectedProduct={selectedProduct}
+        setProducts={setProducts}
+      />
+      <EditModal
+        isEditModalOpen={isEditModalOpen}
         handleCloseModals={handleCloseModals}
         selectedProduct={selectedProduct}
         setProducts={setProducts}
