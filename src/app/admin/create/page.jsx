@@ -29,6 +29,10 @@ const CreateProduct = () => {
       return;
     }
 
+    caracteristicas.forEach(caracteristica => {
+      delete caracteristica.isEditing;
+    });
+    
     const productData = {
       categoria,
       fabricante,

@@ -75,6 +75,9 @@ const EditModal = ({ isEditModalOpen, handleCloseModals, selectedProduct, setPro
             alert("No pueden haber campos vacíos");
             return;
         }
+        caracteristicas.forEach(caracteristica => {
+            delete caracteristica.isEditing;
+        });
         const productData = {
             categoria,
             fabricante,

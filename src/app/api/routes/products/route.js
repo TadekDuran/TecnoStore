@@ -10,6 +10,8 @@ export async function GET(request) {
     const fabricante = searchParams.get("fabricante");
     const precioMin = searchParams.get("precioMin");
     const precioMax = searchParams.get("precioMax");
+    const caracteristicaNombres = searchParams.getAll("caracteristicaNombre");
+    const caracteristicaValores = searchParams.getAll("caracteristicaValor");
     let query = {};
     if (category) 
       query.categoria = category;
@@ -19,6 +21,16 @@ export async function GET(request) {
       query.precio = { ...query.precio, $gte: parseInt(precioMin) };
     if (precioMax)
       query.precio = { ...query.precio, $lte: parseInt(precioMax) };
+    if (caracteristicaNombres.length && caracteristicaValores.length) {
+      query.caracteristicas = {
+        $all: caracteristicaNombres.map((nombre, index) => ({
+          $elemMatch: {
+            nombre: nombre,
+            valor: caracteristicaValores[index]
+          }
+        }))
+      };
+    }
     const products = await Product.find(query);
     return new Response(JSON.stringify(products), {
       status: 200,
