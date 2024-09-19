@@ -4,9 +4,9 @@ import ProductsCards from "@/components/ProductsCards";
 import Filters from "@/components/Filters";
 import { getData } from "../api/routes/products/route";
 
-const Drones = () => {
+const Drone = () => {
   const [products, setProducts] = useState([]);
-
+  const categoria = "Drone"
   const fetchProducts = async (category) => {
     try {
       const data = await getData(category);
@@ -17,15 +17,15 @@ const Drones = () => {
   };
 
   useEffect(() => {
-    fetchProducts("categoria=Drone");
+    fetchProducts(`categoria=${categoria}`);
   }, []);
 
   return (
     <div className="flex min-h-[93vh]">
-      <Filters products={products} fetchProducts={fetchProducts} />
+      <Filters products={products} fetchProducts={fetchProducts} categoria={categoria} />
       <ProductsCards products={products} />
     </div>
   );
 };
 
-export default Drones;
+export default Drone;
