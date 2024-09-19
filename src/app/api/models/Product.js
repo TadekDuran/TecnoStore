@@ -5,6 +5,11 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    destacado:  {
+        type: Boolean,
+        required: false,
+        default: false
+    },
     modelo: {
         type: String,
         required: true

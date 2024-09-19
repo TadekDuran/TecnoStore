@@ -4,7 +4,7 @@ import {
   Table,
   Button
 } from "@mui/joy";
-import { CirclePlus, Trash2, Pencil } from "lucide-react";
+import { CirclePlus, Trash2, Pencil, Star, StarOff } from "lucide-react";
 import { getData } from "../api/routes/products/route";
 import DeleteModal from "@/components/DeleteModal";
 import EditModal from "@/components/EditModal";
@@ -36,6 +36,40 @@ const AdminPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const handleHighlight = async (product) => {
+    const updatedProduct = { ...product, destacado: !product.destacado };
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/routes/products/${product?._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedProduct),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Error en la petición");
+      }
+
+      setProducts((prevProducts) =>
+        prevProducts.map((p) =>
+          p._id === product._id ? updatedProduct : p
+        )
+      );
+
+      alert(
+        `Producto ${updatedProduct.destacado ? "destacado" : "no destacado"
+        } correctamente`
+      );
+    } catch (error) {
+      console.error("Error al actualizar el producto:", error);
+    }
+  }
 
   const openDeleteModal = (product) => {
     setSelectedProduct(product);
@@ -91,11 +125,14 @@ const AdminPage = () => {
               <td>{product.precio}</td>
               <td>{product.fabricante}</td>
               <td>
-                <Button onClick={() => openDeleteModal(product)}>
-                  <Trash2 />
+                <Button onClick={() => handleHighlight(product)}>
+                  {product.destacado ? <StarOff /> : <Star />}
                 </Button>
                 <Button onClick={() => openEditModal(product)}>
                   <Pencil />
+                </Button>
+                <Button onClick={() => openDeleteModal(product)}>
+                  <Trash2 />
                 </Button>
               </td>
             </tr>

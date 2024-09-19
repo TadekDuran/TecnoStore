@@ -11,10 +11,12 @@ import {
   IconButton,
 } from "@mui/joy";
 
-const Filters = ({ products, fetchProducts }) => {
-  const [queries, setQueries] = useState("categoria=Smartphone");
+const Filters = ({ products, fetchProducts, categoria }) => {
+  const [queries, setQueries] = useState(`categoria=${categoria}`);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [fabricante, setFabricante] = useState("");
+  const [almacenamiento, setAlmacenamiento] = useState("");
 
   const brands = [
     {
@@ -47,6 +49,10 @@ const Filters = ({ products, fetchProducts }) => {
     {
       id: 4,
       value: "1TB"
+    },
+    {
+      id: 5,
+      value: "2TB"
     }
   ];
 
@@ -58,20 +64,27 @@ const Filters = ({ products, fetchProducts }) => {
   function deleteFilters() {
     setMinPrice("");
     setMaxPrice("");
-    setQueries("categoria=Smartphone");
+    setFabricante("");
+    setAlmacenamiento("");
+    setQueries(`categoria=${categoria}`);
+    changeQueries("");
   }
 
   return (
     <div className="sticky top-[7vh] flex h-[93vh] w-72 flex-col gap-4 bg-black p-2">
       <FormControl>
         <FormLabel>Marca</FormLabel>
-        <Select size="sm" placeholder="Selecciona una marca">
+        <Select
+          size="sm"
+          placeholder="Selecciona un fabricante"
+          value={fabricante}
+          onChange={(e, newValue) => setFabricante(newValue)}>
           {brands.map(({ value }) => (
             <Option
               key={value}
               value={value}
               onClick={() => {
-                changeQueries(`marca=${value}`);
+                changeQueries(`fabricante=${value}`);
               }}
             >
               {value}
@@ -121,13 +134,14 @@ const Filters = ({ products, fetchProducts }) => {
       </FormControl>
       <FormControl>
         <FormLabel>Almacenamiento</FormLabel>
-        <Select size="sm" placeholder="Selecciona un almacenamiento">
+        <Select size="sm" placeholder="Selecciona un almacenamiento" value={almacenamiento}
+          onChange={(e, newValue) => setAlmacenamiento(newValue)}>
           {storage.map(({ value }) => (
             <Option
               key={value}
               value={value}
               onClick={() => {
-                changeQueries(`almacenamiento=${value}`);
+                changeQueries(`nombreCaracteristica=Almacenamiento&valorCaracteristica=${value}`);
               }}
             >
               {value}

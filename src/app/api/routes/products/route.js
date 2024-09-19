@@ -10,8 +10,9 @@ export async function GET(request) {
     const fabricante = searchParams.get("fabricante");
     const precioMin = searchParams.get("precioMin");
     const precioMax = searchParams.get("precioMax");
-    const caracteristicaNombres = searchParams.getAll("caracteristicaNombre");
-    const caracteristicaValores = searchParams.getAll("caracteristicaValor");
+    const caracteristicaNombres = searchParams.getAll("nombreCaracteristica");
+    const caracteristicaValores = searchParams.getAll("valorCaracteristica");
+    const destacado = searchParams.get("destacado")
     let query = {};
     if (category) 
       query.categoria = category;
@@ -31,6 +32,8 @@ export async function GET(request) {
         }))
       };
     }
+    if(destacado) 
+      query.destacado = destacado;
     const products = await Product.find(query);
     return new Response(JSON.stringify(products), {
       status: 200,
@@ -65,6 +68,21 @@ export async function getData(queries) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products?${queries}`,
+    );
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching filtered data:", error);
+    throw error;
+  }
+}
+
+export async function getHighlights() {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products?destacado=true`,
     );
     if (!res.ok) {
       throw new Error("Failed to fetch data");

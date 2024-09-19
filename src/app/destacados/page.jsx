@@ -1,9 +1,30 @@
-import React from 'react'
+"use client";
+import React, { useState, useEffect } from "react";
+import ProductsCards from "@/components/ProductsCards";
+import Filters from "@/components/Filters";
+import { getHighlights } from "../api/routes/products/route";
 
 const Destacados = () => {
-  return (
-    <div>Destacados</div>
-  )
-}
+  const [products, setProducts] = useState([]);
+  const fetchProducts = async () => {
+    try {
+      const data = await getHighlights();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error in getHightlights:", error);
+    }
+  };
 
-export default Destacados
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  return (
+    <div className="flex min-h-[93vh]">
+      <Filters products={products} fetchProducts={fetchProducts}/>
+      <ProductsCards products={products} />
+    </div>
+  );
+};
+
+export default Destacados;

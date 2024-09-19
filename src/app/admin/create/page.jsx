@@ -38,7 +38,7 @@ const CreateProduct = () => {
       fabricante,
       modelo,
       precio,
-      caracteristicas,
+      caracteristicas
     };
 
     try {

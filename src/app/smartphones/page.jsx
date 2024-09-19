@@ -6,7 +6,7 @@ import { getData } from "../api/routes/products/route";
 
 const Smartphones = () => {
   const [products, setProducts] = useState([]);
-
+  const categoria = "Smartphone"
   const fetchProducts = async (category) => {
     try {
       const data = await getData(category);
@@ -17,12 +17,12 @@ const Smartphones = () => {
   };
 
   useEffect(() => {
-    fetchProducts("categoria=Smartphone");
+    fetchProducts(`categoria=${categoria}`);
   }, []);
 
   return (
     <div className="flex min-h-[93vh]">
-      <Filters products={products} fetchProducts={fetchProducts} />
+      <Filters products={products} fetchProducts={fetchProducts} categoria={categoria} />
       <ProductsCards products={products} />
     </div>
   );
