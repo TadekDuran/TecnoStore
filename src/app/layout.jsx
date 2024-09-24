@@ -1,10 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import InitColorSchemeScript from "@mui/joy/InitColorSchemeScript";
-import { CssVarsProvider, extendTheme } from "@mui/joy/styles";
-import CssBaseline from "@mui/joy/CssBaseline";
-
-import Navbar from "@/components/Navbar";
+import RootLayoutClient from "@/components/RootLayoutClient"; // Importar la parte cliente
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,12 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es" suppressHydrationWarning={true}>
       <body className={`${inter.className} h-screen bg-black text-white`}>
-        <InitColorSchemeScript />
-        <CssVarsProvider>
-          <CssBaseline />
-          <Navbar />
-          {children}
-        </CssVarsProvider>
+        <RootLayoutClient>{children}</RootLayoutClient> {/* Renderiza la parte cliente */}
       </body>
     </html>
   );

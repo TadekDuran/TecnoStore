@@ -10,20 +10,6 @@ import DeleteModal from "@/components/DeleteModal";
 import EditModal from "@/components/EditModal";
 
 const AdminPage = () => {
-  const fabricantes = [
-    { nombre: "Xiaomi" },
-    { nombre: "Samsung" },
-    { nombre: "Motorola" },
-    { nombre: "iPhone" },
-  ];
-
-  const categorias = [
-    { tipo: "Smartphone" },
-    { tipo: "Tablet" },
-    { tipo: "Notebook" },
-    { tipo: "Consola" },
-  ];
-
   const columns = [
     { name: "Modelo" },
     { name: "Categoría" },
@@ -103,13 +89,28 @@ const AdminPage = () => {
   return (
     <div>
       <Button
+        color="neutral"
         component="a"
         href="/admin/create"
         startDecorator={<CirclePlus />}
       >
         Nuevo Producto
       </Button>
-      <Table aria-label="basic table">
+      <Table
+       aria-label="basic table"
+       size="sm" 
+       stickyHeader
+       sx={{
+        backgroundColor: "#1a1a1a",
+        color: "#fff",
+        '& th': {
+          backgroundColor: "#333",
+          color: "#fff",
+        },
+        '& td': {
+          borderColor: "#444",
+        },
+      }}>
         <thead>
           <tr>
             {columns.map((column) => (
@@ -125,13 +126,13 @@ const AdminPage = () => {
               <td>{product.precio}</td>
               <td>{product.fabricante}</td>
               <td>
-                <Button onClick={() => handleHighlight(product)}>
+                <Button onClick={() => handleHighlight(product)} color="neutral">
                   {product.destacado ? <StarOff /> : <Star />}
                 </Button>
-                <Button onClick={() => openEditModal(product)}>
+                <Button onClick={() => openEditModal(product)} color="neutral">
                   <Pencil />
                 </Button>
-                <Button onClick={() => openDeleteModal(product)}>
+                <Button onClick={() => openDeleteModal(product)} color="neutral">
                   <Trash2 />
                 </Button>
               </td>

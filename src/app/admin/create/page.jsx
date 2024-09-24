@@ -118,17 +118,17 @@ const CreateProduct = () => {
         Regresar
       </Button>
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
-        <Typography level="h1">Crear Producto</Typography>
-
-        <FormControl sx={{ display: "flex" }}>
-          <Typography level="h4" sx={{ mb: 0.3 }}>
+        <Typography level="h1" sx={{ color: "white" }}>Crear Producto</Typography>
+  
+        <FormControl sx={{ display: "flex", color: "white" }}>
+          <Typography level="h4" sx={{ mb: 0.3, color: "white" }}>
             Categoría
           </Typography>
           <Select
             placeholder="Selecciona una categoría"
             value={categoria}
             onChange={(e, newValue) => setCategoria(newValue)}
-            sx={{ mb: 1.5 }}
+            sx={{ mb: 1.5, color: "white", backgroundColor: "#333", '& .MuiSelect-select': { color: 'white' }, ":hover": { backgroundColor: "#505050"} }}
           >
             {categorias.map((categoria) => (
               <Option key={categoria.tipo} value={categoria.tipo}>
@@ -136,15 +136,15 @@ const CreateProduct = () => {
               </Option>
             ))}
           </Select>
-
-          <Typography level="h4" sx={{ mb: 0.3 }}>
+  
+          <Typography level="h4" sx={{ mb: 0.3, color: "white" }}>
             Fabricante
           </Typography>
           <Select
             placeholder="Selecciona un fabricante"
             value={fabricante}
             onChange={(e, newValue) => setFabricante(newValue)}
-            sx={{ mb: 1.5 }}
+            sx={{ mb: 1.5, color: "white", backgroundColor: "#333", '& .MuiSelect-select': { color: 'white' }, ":hover": { backgroundColor: "#505050"} }}
           >
             {fabricantes.map((fabricante) => (
               <Option key={fabricante.nombre} value={fabricante.nombre}>
@@ -152,18 +152,18 @@ const CreateProduct = () => {
               </Option>
             ))}
           </Select>
-
-          <Typography level="h4" sx={{ mb: 0.3 }}>
+  
+          <Typography level="h4" sx={{ mb: 0.3, color: "white" }}>
             Modelo
           </Typography>
           <Input
             placeholder="Introduce el modelo"
             value={modelo}
             onChange={(e) => setModelo(e.target.value)}
-            sx={{ mb: 1.5 }}
+            sx={{ mb: 1.5, color: "white", backgroundColor: "#333", '&::placeholder': { color: 'lightgray' } }}
           />
-
-          <Typography level="h4" sx={{ mb: 0.3 }}>
+  
+          <Typography level="h4" sx={{ mb: 0.3, color: "white" }}>
             Precio (USD)
           </Typography>
           <Input
@@ -171,10 +171,10 @@ const CreateProduct = () => {
             placeholder="Introduce el precio"
             value={precio}
             onChange={(e) => setPrecio(e.target.value)}
-            sx={{ mb: 1.5 }}
+            sx={{ mb: 1.5, color: "white", backgroundColor: "#333", '&::placeholder': { color: 'lightgray' } }}
           />
-
-          <Typography level="h4" sx={{ mb: 0.3 }}>
+  
+          <Typography level="h4" sx={{ mb: 0.3, color: "white" }}>
             Características
           </Typography>
           <div className="flex flex-col gap-2 w-full">
@@ -188,6 +188,7 @@ const CreateProduct = () => {
                       onChange={(e) =>
                         handleInputChange("nombre", e.target.value, index)
                       }
+                      sx={{ color: "white", backgroundColor: "#333", '&::placeholder': { color: 'lightgray' } }}
                     />
                     <Input
                       placeholder="Valor"
@@ -195,41 +196,41 @@ const CreateProduct = () => {
                       onChange={(e) =>
                         handleInputChange("valor", e.target.value, index)
                       }
+                      sx={{ color: "white", backgroundColor: "#333", '&::placeholder': { color: 'lightgray' } }}
                     />
-                    <Button onClick={() => saveCaracteristica(index)}>
+                    <Button onClick={() => saveCaracteristica(index)} sx={{ color: "white" }}>
                       Guardar
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Typography>{`${caracteristica.nombre}: ${caracteristica.valor}`}</Typography>
-                    <IconButton onClick={() => editCaracteristica(index)}>
+                    <Typography sx={{ color: "white" }}>{`${caracteristica.nombre}: ${caracteristica.valor}`}</Typography>
+                    <IconButton onClick={() => editCaracteristica(index)} sx={{ color: "white" }}>
                       <Pencil />
                     </IconButton>
                   </>
                 )}
-                <IconButton onClick={() => removeCaracteristica(index)}>
+                <IconButton onClick={() => removeCaracteristica(index)} sx={{ color: "white" }}>
                   <Trash2 />
                 </IconButton>
               </Stack>
             ))}
             {error && (
-              <Typography level="body2" color="danger">
+              <Typography level="body2" color="danger" sx={{ color: "white" }}>
                 {error}
               </Typography>
             )}
-            <Button startDecorator={<CirclePlus />} onClick={addCaracteristica}>
+            <Button startDecorator={<CirclePlus />} onClick={addCaracteristica} sx={{ color: "white" }}>
               Añadir característica
             </Button>
           </div>
         </FormControl>
-
-        <Button type="submit" variant="plain">
+  
+        <Button type="submit" color="neutral" variant="solid" sx={{ color: "white" }}>
           Subir producto
         </Button>
       </form>
     </div>
   );
 };
-
 export default CreateProduct;

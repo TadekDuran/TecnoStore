@@ -116,7 +116,11 @@ const EditModal = ({ isEditModalOpen, handleCloseModals, selectedProduct, setPro
 
     return (
         <Modal open={isEditModalOpen} onClose={handleCloseModals}>
-            <ModalDialog>
+            <ModalDialog sx={{
+                backgroundColor: "#1a1a1a", // Fondo oscuro para el modal
+                color: "#fff", // Texto blanco
+                borderRadius: "8px", // Ajustar bordes para darle un aspecto suave
+            }}>
                 <form action="" className="flex flex-col items-center">
                     <Typography level="h6">
                         Editar producto: {selectedProduct?.modelo}
@@ -207,14 +211,14 @@ const EditModal = ({ isEditModalOpen, handleCloseModals, selectedProduct, setPro
                                         </>
                                     ) : (
                                         <>
-                                            <Typography>{`${caracteristica.nombre}: ${caracteristica.valor}`}</Typography>
+                                            <Typography textColor={"common.white"}>{`${caracteristica.nombre}: ${caracteristica.valor}`}</Typography>
                                             <IconButton onClick={() => editCaracteristica(index)}>
-                                                <Pencil />
+                                                <Pencil color="#fff" />
                                             </IconButton>
                                         </>
                                     )}
                                     <IconButton onClick={() => removeCaracteristica(index)}>
-                                        <Trash2 />
+                                        <Trash2 color="#fff" />
                                     </IconButton>
                                 </Stack>
                             ))}
