@@ -4,7 +4,7 @@ import {
   Table,
   Button
 } from "@mui/joy";
-import { CirclePlus, Trash2, Pencil, Star, StarOff } from "lucide-react";
+import { CirclePlus, Trash2, Pencil, Star, StarOff, Check, X } from "lucide-react";
 import { getData } from "../api/routes/products/route";
 import DeleteModal from "@/components/DeleteModal";
 import EditModal from "@/components/EditModal";
@@ -15,6 +15,7 @@ const AdminPage = () => {
     { name: "Categoría" },
     { name: "Precio" },
     { name: "Fabricante" },
+    { name: "Stock" },
     { name: "Acciones" },
   ];
 
@@ -51,6 +52,39 @@ const AdminPage = () => {
       alert(
         `Producto ${updatedProduct.destacado ? "destacado" : "no destacado"
         } correctamente`
+      );
+    } catch (error) {
+      console.error("Error al actualizar el producto:", error);
+    }
+  }
+
+  const handleStock = async (product) => {
+    const updatedProduct = { ...product, stock: !product.stock };
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/routes/products/${product?._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedProduct),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Error en la petición");
+      }
+
+      setProducts((prevProducts) =>
+        prevProducts.map((p) =>
+          p._id === product._id ? updatedProduct : p
+        )
+      );
+
+      alert(
+        `Stock del producto ${updatedProduct.modelo} actualizado correctamente`
       );
     } catch (error) {
       console.error("Error al actualizar el producto:", error);
@@ -97,20 +131,20 @@ const AdminPage = () => {
         Nuevo Producto
       </Button>
       <Table
-       aria-label="basic table"
-       size="sm" 
-       stickyHeader
-       sx={{
-        backgroundColor: "#1a1a1a",
-        color: "#fff",
-        '& th': {
-          backgroundColor: "#333",
+        aria-label="basic table"
+        size="sm"
+        stickyHeader
+        sx={{
+          backgroundColor: "#1a1a1a",
           color: "#fff",
-        },
-        '& td': {
-          borderColor: "#444",
-        },
-      }}>
+          '& th': {
+            backgroundColor: "#333",
+            color: "#fff",
+          },
+          '& td': {
+            borderColor: "#444",
+          },
+        }}>
         <thead>
           <tr>
             {columns.map((column) => (
@@ -126,13 +160,25 @@ const AdminPage = () => {
               <td>{product.precio}</td>
               <td>{product.fabricante}</td>
               <td>
-                <Button onClick={() => handleHighlight(product)} color="neutral">
+                <Button 
+                  onClick={() => handleStock(product)}
+                  color={product.stock ? "danger" : "success"} >
+                  {product.stock ? <X /> : <Check />}
+                </Button>
+              </td>
+              <td>
+                <Button onClick={() => handleHighlight(product)} sx={{
+                  backgroundColor: "#FFD700", // Color amarillo dorado
+                  '&:hover': {
+                    backgroundColor: "#FFC107", // Un tono más oscuro de amarillo al hacer hover
+                  },
+                }}>
                   {product.destacado ? <StarOff /> : <Star />}
                 </Button>
                 <Button onClick={() => openEditModal(product)} color="neutral">
                   <Pencil />
                 </Button>
-                <Button onClick={() => openDeleteModal(product)} color="neutral">
+                <Button onClick={() => openDeleteModal(product)} color="danger">
                   <Trash2 />
                 </Button>
               </td>
