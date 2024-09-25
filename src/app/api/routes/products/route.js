@@ -13,6 +13,7 @@ export async function GET(request) {
     const caracteristicaNombres = searchParams.getAll("nombreCaracteristica");
     const caracteristicaValores = searchParams.getAll("valorCaracteristica");
     const destacado = searchParams.get("destacado")
+    const modelo = searchParams.get("modelo")
     let query = {};
     if (category) 
       query.categoria = category;
@@ -34,6 +35,8 @@ export async function GET(request) {
     }
     if(destacado) 
       query.destacado = destacado;
+    if(modelo)
+      query.modelo = { $regex: modelo, $options: "i" };
     const products = await Product.find(query);
     return new Response(JSON.stringify(products), {
       status: 200,

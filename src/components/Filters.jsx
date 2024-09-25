@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Select,
   Option,
@@ -12,6 +12,7 @@ import {
 } from "@mui/joy";
 
 const Filters = ({ products, fetchProducts, categoria }) => {
+  const [searchTerm, setSearchTerm] = useState("");
   const [queries, setQueries] = useState(`categoria=${categoria}`);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -56,23 +57,42 @@ const Filters = ({ products, fetchProducts, categoria }) => {
     }
   ];
 
-  function changeQueries(newQueries) {
-    const updateQueries = `${queries}&${newQueries}`;
-    fetchProducts(updateQueries);
-  }
+  useEffect(() => {
+    let newQueries = `categoria=${categoria}`;
+    if (fabricante) newQueries += `&fabricante=${fabricante}`;
+    if (minPrice) newQueries += `&precioMin=${minPrice}`;
+    if (maxPrice) newQueries += `&precioMax=${maxPrice}`;
+    if (almacenamiento) newQueries += `&nombreCaracteristica=Almacenamiento&valorCaracteristica=${almacenamiento}`;
+    if (searchTerm) newQueries += `&modelo=${searchTerm}`;
+
+    if (newQueries !== queries) {
+      setQueries(newQueries);
+    }
+  }, [fabricante, minPrice, maxPrice, almacenamiento, categoria, searchTerm]);
+
+  useEffect(() => {
+    fetchProducts(queries);
+  }, [queries]);
 
   function deleteFilters() {
     setMinPrice("");
     setMaxPrice("");
     setFabricante("");
     setAlmacenamiento("");
+    setSearchTerm("");
     setQueries(`categoria=${categoria}`);
-    changeQueries("");
   }
 
   return (
     <div className="sticky top-[7vh] flex h-[93vh] w-72 flex-col gap-4 bg-black p-2">
       <FormControl>
+        <FormLabel>Buscar Producto</FormLabel>
+        <Input
+          placeholder="Ingrese el modelo"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          sx={{ backgroundColor: "#333", color: "#fff", marginBottom: '16px', width: '300px' }}
+        />
         <FormLabel>Marca</FormLabel>
         <Select
           size="sm"
@@ -83,9 +103,6 @@ const Filters = ({ products, fetchProducts, categoria }) => {
             <Option
               key={value}
               value={value}
-              onClick={() => {
-                changeQueries(`fabricante=${value}`);
-              }}
             >
               {value}
             </Option>
@@ -111,9 +128,6 @@ const Filters = ({ products, fetchProducts, categoria }) => {
           />
           <IconButton
             disabled={maxPrice === "" && minPrice === ""}
-            onClick={() =>
-              changeQueries(`precioMin=${minPrice}&precioMax=${maxPrice}`)
-            }
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -140,9 +154,6 @@ const Filters = ({ products, fetchProducts, categoria }) => {
             <Option
               key={value}
               value={value}
-              onClick={() => {
-                changeQueries(`nombreCaracteristica=Almacenamiento&valorCaracteristica=${value}`);
-              }}
             >
               {value}
             </Option>

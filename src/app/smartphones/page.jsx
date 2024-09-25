@@ -7,9 +7,9 @@ import { getData } from "../api/routes/products/route";
 const Smartphones = () => {
   const [products, setProducts] = useState([]);
   const categoria = "Smartphone"
-  const fetchProducts = async (category) => {
+  const fetchProducts = async (query) => {
     try {
-      const data = await getData(category);
+      const data = await getData(query);
       setProducts(data);
     } catch (error) {
       console.error("Error in getProducts:", error);
