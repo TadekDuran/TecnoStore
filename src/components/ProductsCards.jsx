@@ -13,7 +13,7 @@ const ProductsCards = ({ products }) => {
               alt="Test"
             />
             <div className="h-1/5 text-center">
-              <p>{product.modelo}</p>
+              <p>{product.fabricante} {product.modelo}</p>
               <p>${product.precio} USD</p>
             </div>
           </Link>

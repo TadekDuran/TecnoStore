@@ -27,7 +27,7 @@ const ProductSchema = new mongoose.Schema(
             required: false,
             default: false,
         },
-        stock:  {
+        stock: {
             type: Boolean,
             default: true
         }
@@ -36,6 +36,52 @@ const ProductSchema = new mongoose.Schema(
         timestamps: true,
     },
 );
+
+ProductSchema.post('save', async function () {
+    const productosConMismoModelo = await mongoose.model("Product").aggregate([
+        { $match: { modelo: this.modelo, categoria: this.categoria } },
+        {
+            $group: {
+                _id: "$modelo",
+                productos: { $push: "$$ROOT" },
+                count: { $sum: 1 }
+            }
+        },
+        { $match: { count: { $gt: 1 } } }
+    ]);
+
+    if (productosConMismoModelo.length > 0) {
+        const grupoProductos = productosConMismoModelo[0].productos;
+
+        const caracteristicasComunes = grupoProductos[0].caracteristicas.map(
+            (caracteristica) => caracteristica.nombre
+        );
+
+        const caracteristicaUnica = caracteristicasComunes.find((nombreCaracteristica) => {
+            const valoresCaracteristica = grupoProductos.map((producto) => {
+                const caracteristica = producto.caracteristicas.find(
+                    (caract) => caract.nombre === nombreCaracteristica
+                );
+                return caracteristica ? caracteristica.valor : null;
+            });
+        });
+
+        if (caracteristicaUnica) {
+            for (const producto of grupoProductos) {
+                const caracteristicaValor = producto.caracteristicas.find(
+                    (caract) => caract.nombre === caracteristicaUnica
+                ).valor;
+
+                const nuevoModelo = `${producto.modelo} ${caracteristicaValor}`;
+
+                await mongoose.model("Product").updateOne(
+                    { _id: producto._id },
+                    { $set: { modelo: nuevoModelo } }
+                );
+            }
+        }
+    }
+});
 
 let Product;
 

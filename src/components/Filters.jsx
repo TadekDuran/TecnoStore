@@ -14,7 +14,7 @@ import {
 const Filters = ({ fetchProducts, categoria }) => {
   const [filterList, setFilterList] = useState({
     searchTerm: "",
-    price: { min: 0, max: 1000 },
+    price: { min: 0, max: "" },
     fabricante: "",
     almacenamiento: ""
   });
@@ -71,17 +71,19 @@ const Filters = ({ fetchProducts, categoria }) => {
     if (newQueries !== queries) {
       setQueries(newQueries);
     }
-  }, [filterList, queries, categoria]);
+  }, [filterList]);
 
   useEffect(() => {
-    fetchProducts(queries);
+    if (queries !== `categoria=${categoria}`) {
+      fetchProducts(queries);
+    }
   }, [queries]);
 
 
   function deleteFilters() {
     setFilterList({
       searchTerm: "",
-      price: { min: 0, max: 1000 },
+      price: { min: 0, max: "" },
       fabricante: "",
       almacenamiento: ""
     })
