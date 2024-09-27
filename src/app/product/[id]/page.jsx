@@ -5,7 +5,7 @@ import { getProduct } from "@/app/api/routes/products/[id]/route";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import Link from "next/link";
-import { Typography, Sheet, Box, Radio } from "@mui/joy";
+import { Typography, Sheet, Box, Radio, Table } from "@mui/joy";
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -33,15 +33,7 @@ const ProductPage = () => {
       thumbnail: "https://picsum.photos/id/847/100/100",
     },
   ];
-  const caracteristicas = [
-    {
-      caracteristica: "Almacenamiento",
-      valor: ["512GB", "1TB"],
-    },{
-      caracteristica: "RAM",
-      valor: ["8GB"],
-    },
-  ];
+
   useEffect(() => {
     if (id) {
       /* buena implementacion de condicional para que realize el fetch solo si el id existe,implementar esta logica en el componente visual tambien */
@@ -63,7 +55,7 @@ const ProductPage = () => {
   if (existProduct) {
     return (
       <div className="flex flex-col items-center justify-center sm:flex-row sm:items-start">
-        <div className="">
+        <div className="w-1/2">
           <ImageGallery
             items={images}
             thumbnailPosition="left"
@@ -71,25 +63,29 @@ const ProductPage = () => {
             showPlayButton={false}
           />
         </div>
-        <Sheet sx={{ display: "flex", flexDirection: "column", padding: 1 }}>
+        <Sheet sx={{ display: "flex", flexDirection: "column", padding: 1, width: "50%" }}> 
           <Typography level="h1">
-            {product.marca} {product.modelo}
+            {product.fabricante} {product.modelo}
           </Typography>
           <Box sx={{ display: "flex", gap: 0.5, alignItems: "end" }}>
             <Typography level="h2">${product.precio} USD</Typography>
             <Typography level="body-lg">(PRECIO EN PESOS)</Typography>
           </Box>
           <Link href={"/pagos"}>Conocé nuestros medios de pago</Link>
-          {caracteristicas.map((caracteristica) => (
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Typography>{caracteristica.caracteristica}</Typography>
-              {caracteristica.valor.map((valor, index) => (
-                <Radio key={index} label={valor}>
-                  {valor}
-                </Radio>
+          <Table
+            aria-label="product attributes"
+            size="sm"
+            sx={{}}
+          >
+            <tbody>
+              {product.caracteristicas.map((caracteristica) => (
+                <tr>
+                  <td>{caracteristica.nombre}</td>
+                  <td>{caracteristica.valor}</td>
+                </tr>
               ))}
-            </Box>
-          ))}
+            </tbody>
+          </Table>
         </Sheet>
       </div>
     );
