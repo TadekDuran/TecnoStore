@@ -16,75 +16,86 @@ const EditModal = ({ isEditModalOpen, handleCloseModals, selectedProduct, setPro
         { tipo: "Consola" },
     ];
 
-    const [categoria, setCategoria] = useState("");
-    const [fabricante, setFabricante] = useState("");
-    const [modelo, setModelo] = useState("");
-    const [precio, setPrecio] = useState("");
-    const [caracteristicas, setCaracteristicas] = useState([]);
+    const [productInfo, setProductInfo] = useState({
+        categoria: "",
+        fabricante: "",
+        modelo: "",
+        precio: "",
+        caracteristicas: []
+    });
     const [error, setError] = useState("");
 
     useEffect(() => {
         if (selectedProduct) {
-            setCategoria(selectedProduct.categoria || "");
-            setFabricante(selectedProduct.fabricante || "");
-            setModelo(selectedProduct.modelo || "");
-            setPrecio(selectedProduct.precio || "");
-            setCaracteristicas(selectedProduct.caracteristicas || []);
+            setProductInfo({
+                categoria: selectedProduct.categoria,
+                fabricante: selectedProduct.fabricante,
+                modelo: selectedProduct.modelo,
+                precio: selectedProduct.precio,
+                caracteristicas: selectedProduct.caracteristicas
+            }
+            );
         }
     }, [selectedProduct]);
 
     const handleInputChange = (key, value, index) => {
-        const updatedCaracteristicas = [...caracteristicas];
+        const updatedCaracteristicas = [...productInfo.caracteristicas];
         updatedCaracteristicas[index][key] = value;
-        setCaracteristicas(updatedCaracteristicas);
+        setProductInfo((prevState) => ({
+            ...prevState,
+            caracteristicas: updatedCaracteristicas,
+        }));
         if (error) setError("");
     };
 
     const addCaracteristica = () => {
-        setCaracteristicas([
-            ...caracteristicas,
-            { nombre: "", valor: "", isEditing: true },
-        ]);
+        setProductInfo((prevState) => ({
+            ...prevState,
+            caracteristicas: [...prevState.caracteristicas,
+            { nombre: "", valor: "", isEditing: true },]
+        }));
     };
 
     const saveCaracteristica = (index) => {
-        const { nombre, valor } = caracteristicas[index];
+        const { nombre, valor } = productInfo.caracteristicas[index];
         if (!nombre || !valor) {
             alert("Ambos campos son obligatorios.");
             return;
         }
-        const updatedCaracteristicas = [...caracteristicas];
+        const updatedCaracteristicas = [...productInfo.caracteristicas];
         updatedCaracteristicas[index].isEditing = false;
-        setCaracteristicas(updatedCaracteristicas);
+        setProductInfo((prevState) => ({
+            ...prevState,
+            caracteristicas: updatedCaracteristicas,
+        }));
         setError("");
     };
 
     const editCaracteristica = (index) => {
-        const updatedCaracteristicas = [...caracteristicas];
+        const updatedCaracteristicas = [...productInfo.caracteristicas];
         updatedCaracteristicas[index].isEditing = true;
-        setCaracteristicas(updatedCaracteristicas);
+        setProductInfo((prevState) => ({
+            ...prevState,
+            caracteristicas: updatedCaracteristicas,
+        }));
     };
 
     const removeCaracteristica = (index) => {
-        setCaracteristicas(caracteristicas.filter((_, i) => i !== index));
+        setProductInfo((prevState) => ({
+            ...prevState,
+            caracteristicas: [...prevState.caracteristicas.filter((_, i) => i !== index)],
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!categoria || !fabricante || !modelo || !precio) {
+        if (!productInfo.categoria || !productInfo.fabricante || !productInfo.modelo || !productInfo.precio) {
             alert("No pueden haber campos vacíos");
             return;
         }
-        caracteristicas.forEach(caracteristica => {
+        productInfo.caracteristicas.forEach(caracteristica => {
             delete caracteristica.isEditing;
         });
-        const productData = {
-            categoria,
-            fabricante,
-            modelo,
-            precio,
-            caracteristicas,
-        };
         try {
             const response = await fetch(
                 `http://localhost:3000/api/routes/products/${selectedProduct?._id}`,
@@ -93,7 +104,7 @@ const EditModal = ({ isEditModalOpen, handleCloseModals, selectedProduct, setPro
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(productData),
+                    body: JSON.stringify(productInfo),
                 },
             );
 
@@ -133,8 +144,11 @@ const EditModal = ({ isEditModalOpen, handleCloseModals, selectedProduct, setPro
                         <Select
                             placeholder="Selecciona una categoría"
                             defaultValue={selectedProduct?.categoria}
-                            value={categoria}
-                            onChange={(e, newValue) => setCategoria(newValue)}
+                            value={productInfo.categoria}
+                            onChange={(e, newValue) => setProductInfo((prevState) => ({
+                                ...prevState,
+                                categoria: newValue,
+                            }))}
                             sx={{ mb: 1.5 }}
                         >
                             {categorias.map((categoria) => (
@@ -150,8 +164,11 @@ const EditModal = ({ isEditModalOpen, handleCloseModals, selectedProduct, setPro
                         <Select
                             placeholder="Selecciona un fabricante"
                             defaultValue={selectedProduct?.fabricante}
-                            value={fabricante}
-                            onChange={(e, newValue) => setFabricante(newValue)}
+                            value={productInfo.fabricante}
+                            onChange={(e, newValue) => setProductInfo((prevState) => ({
+                                ...prevState,
+                                fabricante: newValue,
+                            }))}
                             sx={{ mb: 1.5 }}
                         >
                             {fabricantes.map((fabricante) => (
@@ -167,8 +184,11 @@ const EditModal = ({ isEditModalOpen, handleCloseModals, selectedProduct, setPro
                         <Input
                             placeholder="Introduce el modelo"
                             defaultValue={selectedProduct?.modelo}
-                            value={modelo}
-                            onChange={(e) => setModelo(e.target.value)}
+                            value={productInfo.modelo}
+                            onChange={(e) => setProductInfo((prevState) => ({
+                                ...prevState,
+                                modelo: e.target.value,
+                            }))}
                             sx={{ mb: 1.5 }}
                         />
 
@@ -178,8 +198,11 @@ const EditModal = ({ isEditModalOpen, handleCloseModals, selectedProduct, setPro
                         <Input
                             placeholder="Introduce el precio"
                             defaultValue={selectedProduct?.precio}
-                            value={precio}
-                            onChange={(e) => setPrecio(e.target.value)}
+                            value={productInfo.precio}
+                            onChange={(e) => setProductInfo((prevState) => ({
+                                ...prevState,
+                                precio: e.target.value,
+                            }))}
                             sx={{ mb: 1.5 }}
                         />
 
@@ -187,7 +210,7 @@ const EditModal = ({ isEditModalOpen, handleCloseModals, selectedProduct, setPro
                             Características
                         </Typography>
                         <div className="flex flex-col gap-2 w-full">
-                            {caracteristicas.map((caracteristica, index) => (
+                            {productInfo.caracteristicas.map((caracteristica, index) => (
                                 <Stack key={index} direction="row" alignItems="center" spacing={2}>
                                     {caracteristica.isEditing ? (
                                         <>

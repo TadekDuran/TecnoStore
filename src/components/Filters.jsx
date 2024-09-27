@@ -11,13 +11,14 @@ import {
   IconButton,
 } from "@mui/joy";
 
-const Filters = ({ products, fetchProducts, categoria }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+const Filters = ({ fetchProducts, categoria }) => {
+  const [filterList, setFilterList] = useState({
+    searchTerm: "",
+    price: { min: 0, max: 1000 },
+    fabricante: "",
+    almacenamiento: ""
+  });
   const [queries, setQueries] = useState(`categoria=${categoria}`);
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [fabricante, setFabricante] = useState("");
-  const [almacenamiento, setAlmacenamiento] = useState("");
 
   const brands = [
     {
@@ -58,6 +59,8 @@ const Filters = ({ products, fetchProducts, categoria }) => {
   ];
 
   useEffect(() => {
+    let { fabricante, almacenamiento, searchTerm, price: { min: minPrice, max: maxPrice } } = filterList;
+
     let newQueries = `categoria=${categoria}`;
     if (fabricante) newQueries += `&fabricante=${fabricante}`;
     if (minPrice) newQueries += `&precioMin=${minPrice}`;
@@ -68,18 +71,20 @@ const Filters = ({ products, fetchProducts, categoria }) => {
     if (newQueries !== queries) {
       setQueries(newQueries);
     }
-  }, [fabricante, minPrice, maxPrice, almacenamiento, categoria, searchTerm]);
+  }, [filterList, queries, categoria]);
 
   useEffect(() => {
     fetchProducts(queries);
   }, [queries]);
 
+
   function deleteFilters() {
-    setMinPrice("");
-    setMaxPrice("");
-    setFabricante("");
-    setAlmacenamiento("");
-    setSearchTerm("");
+    setFilterList({
+      searchTerm: "",
+      price: { min: 0, max: 1000 },
+      fabricante: "",
+      almacenamiento: ""
+    })
     setQueries(`categoria=${categoria}`);
   }
 
@@ -89,21 +94,29 @@ const Filters = ({ products, fetchProducts, categoria }) => {
         <FormLabel>Buscar Producto</FormLabel>
         <Input
           placeholder="Ingrese el modelo"
-          value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
-          sx={{ backgroundColor: "#333", color: "#fff", marginBottom: '16px', width: '300px' }}
+          value={filterList.searchTerm}
+          onChange={(event) =>
+            setFilterList((prevState) => ({
+              ...prevState,
+              searchTerm: event.target.value,
+            }))
+          }
+          sx={{ backgroundColor: "#333", color: "#fff", marginBottom: "16px", width: "300px" }}
         />
         <FormLabel>Marca</FormLabel>
         <Select
           size="sm"
           placeholder="Selecciona un fabricante"
-          value={fabricante}
-          onChange={(e, newValue) => setFabricante(newValue)}>
+          value={filterList.fabricante}
+          onChange={(e, newValue) =>
+            setFilterList((prevState) => ({
+              ...prevState,
+              fabricante: newValue,
+            }))
+          }
+        >
           {brands.map(({ value }) => (
-            <Option
-              key={value}
-              value={value}
-            >
+            <Option key={value} value={value}>
               {value}
             </Option>
           ))}
@@ -116,18 +129,34 @@ const Filters = ({ products, fetchProducts, categoria }) => {
             size="sm"
             placeholder="Mínimo"
             type="number"
-            value={minPrice}
-            onChange={(event) => setMinPrice(Number(event.target.value))}
+            value={filterList.price.min}
+            onChange={(event) =>
+              setFilterList((prevState) => ({
+                ...prevState,
+                price: {
+                  ...prevState.price,
+                  min: Number(event.target.value),
+                },
+              }))
+            }
           />
           <Input
             size="sm"
             placeholder="Máximo"
             type="number"
-            value={maxPrice}
-            onChange={(event) => setMaxPrice(Number(event.target.value))}
+            value={filterList.price.max}
+            onChange={(event) =>
+              setFilterList((prevState) => ({
+                ...prevState,
+                price: {
+                  ...prevState.price,
+                  max: Number(event.target.value),
+                },
+              }))
+            }
           />
           <IconButton
-            disabled={maxPrice === "" && minPrice === ""}
+            disabled={filterList.price.max === "" && filterList.price.min === ""}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -136,9 +165,9 @@ const Filters = ({ products, fetchProducts, categoria }) => {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="lucide lucide-chevron-right"
             >
               <path d="m9 18 6-6-6-6" />
@@ -148,13 +177,19 @@ const Filters = ({ products, fetchProducts, categoria }) => {
       </FormControl>
       <FormControl>
         <FormLabel>Almacenamiento</FormLabel>
-        <Select size="sm" placeholder="Selecciona un almacenamiento" value={almacenamiento}
-          onChange={(e, newValue) => setAlmacenamiento(newValue)}>
+        <Select
+          size="sm"
+          placeholder="Selecciona un almacenamiento"
+          value={filterList.almacenamiento}
+          onChange={(e, newValue) =>
+            setFilterList((prevState) => ({
+              ...prevState,
+              almacenamiento: newValue,
+            }))
+          }
+        >
           {storage.map(({ value }) => (
-            <Option
-              key={value}
-              value={value}
-            >
+            <Option key={value} value={value}>
               {value}
             </Option>
           ))}
