@@ -87,7 +87,10 @@ const Filters = ({ fetchProducts, categoria }) => {
       fabricante: "",
       almacenamiento: ""
     })
-    setQueries(`categoria=${categoria}`);
+    const defaultQuery = `categoria=${categoria}`;
+    setQueries(defaultQuery);
+    
+    fetchProducts(defaultQuery);
   }
 
   return (

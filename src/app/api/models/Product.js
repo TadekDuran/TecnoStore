@@ -37,43 +37,51 @@ const ProductSchema = new mongoose.Schema(
     },
 );
 
-ProductSchema.post('save', async function () {
+ProductSchema.post("save", async function () {
+    const baseModelo = this.modelo.replace(/\b\d+(GB|TB|MB|RAM)\b/g, '').trim(); // El modelo base sin características
     const productosConMismoModelo = await mongoose.model("Product").aggregate([
-        { $match: { modelo: this.modelo, categoria: this.categoria } },
+        { $match: { modelo: { $regex: `^${baseModelo}` }, categoria: this.categoria } },
         {
             $group: {
-                _id: "$modelo",
+                _id: null,
                 productos: { $push: "$$ROOT" },
-                count: { $sum: 1 }
-            }
+                count: { $sum: 1 },
+            },
         },
-        { $match: { count: { $gt: 1 } } }
+        { $match: { count: { $gt: 1 } } }, // Solo si hay más de un producto con el mismo modelo base
     ]);
 
     if (productosConMismoModelo.length > 0) {
         const grupoProductos = productosConMismoModelo[0].productos;
 
-        const caracteristicasComunes = grupoProductos[0].caracteristicas.map(
+        // Identificar todas las características comunes entre los productos
+        const todasLasCaracteristicas = grupoProductos[0].caracteristicas.map(
             (caracteristica) => caracteristica.nombre
         );
 
-        const caracteristicaUnica = caracteristicasComunes.find((nombreCaracteristica) => {
+        const caracteristicasUnicas = todasLasCaracteristicas.filter((nombreCaracteristica) => {
             const valoresCaracteristica = grupoProductos.map((producto) => {
                 const caracteristica = producto.caracteristicas.find(
                     (caract) => caract.nombre === nombreCaracteristica
                 );
                 return caracteristica ? caracteristica.valor : null;
             });
+            return new Set(valoresCaracteristica).size > 1; // Solo características con más de un valor
         });
 
-        if (caracteristicaUnica) {
-            for (const producto of grupoProductos) {
-                const caracteristicaValor = producto.caracteristicas.find(
-                    (caract) => caract.nombre === caracteristicaUnica
-                ).valor;
+        // Actualizar el modelo de cada producto con las características únicas
+        for (const producto of grupoProductos) {
+            const valoresUnicos = caracteristicasUnicas.map((nombreCaracteristica) => {
+                const caracteristica = producto.caracteristicas.find(
+                    (caract) => caract.nombre === nombreCaracteristica
+                );
+                return caracteristica ? caracteristica.valor : "";
+            });
 
-                const nuevoModelo = `${producto.modelo} ${caracteristicaValor}`;
+            const nuevoModelo = `${baseModelo} ${valoresUnicos.filter(Boolean).join(" / ")}`;
 
+            // Si el modelo no contiene las características únicas, actualizamos el producto
+            if (producto.modelo !== nuevoModelo && valoresUnicos.some(Boolean)) {
                 await mongoose.model("Product").updateOne(
                     { _id: producto._id },
                     { $set: { modelo: nuevoModelo } }

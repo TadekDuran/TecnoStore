@@ -1,5 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
+import useStore from "@/stores/store";
 import { useEffect, useState } from "react";
 import { getProduct } from "@/app/api/routes/products/[id]/route";
 import ImageGallery from "react-image-gallery";
@@ -8,6 +9,7 @@ import Link from "next/link";
 import { Typography, Sheet, Box, Radio, Table } from "@mui/joy";
 
 const ProductPage = () => {
+  const { dolarBlue, loading, error, fetchDolarBlue } = useStore();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [existProduct, setExistProduct] = useState(false);
@@ -47,8 +49,9 @@ const ProductPage = () => {
         setProduct(data);
       };
       fetchProduct();
+      fetchDolarBlue();
     }
-  }, [id]);
+  }, [id, fetchDolarBlue]);
 
   console.log(product);
 
@@ -69,7 +72,7 @@ const ProductPage = () => {
           </Typography>
           <Box sx={{ display: "flex", gap: 0.5, alignItems: "end" }}>
             <Typography level="h2">${product.precio} USD</Typography>
-            <Typography level="body-lg">(PRECIO EN PESOS)</Typography>
+            <Typography level="body-lg">(Aproximado en pesos: {dolarBlue*product.precio})</Typography>
           </Box>
           <Link href={"/pagos"}>Conocé nuestros medios de pago</Link>
           <Table
