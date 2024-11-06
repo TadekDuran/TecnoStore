@@ -13,28 +13,8 @@ const ProductPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [existProduct, setExistProduct] = useState(false);
-  const images = [
-    {
-      original: "https://picsum.photos/id/847/400/500",
-      thumbnail: "https://picsum.photos/id/847/100/100",
-    },
-    {
-      original: "https://picsum.photos/id/847/400/500",
-      thumbnail: "https://picsum.photos/id/847/100/100",
-    },
-    {
-      original: "https://picsum.photos/id/847/400/500",
-      thumbnail: "https://picsum.photos/id/847/100/100",
-    },
-    {
-      original: "https://picsum.photos/id/847/400/500",
-      thumbnail: "https://picsum.photos/id/847/100/100",
-    },
-    {
-      original: "https://picsum.photos/id/847/400/500",
-      thumbnail: "https://picsum.photos/id/847/100/100",
-    },
-  ];
+  const [images, setImages] = useState([]);
+  
 
   useEffect(() => {
     if (id) {
@@ -47,6 +27,11 @@ const ProductPage = () => {
         }
         setExistProduct(true);
         setProduct(data);
+        const formattedImages = data.imagen.map((url) => ({
+          original: url,
+          thumbnail: url,
+        }));
+        setImages(formattedImages);
       };
       fetchProduct();
       fetchDolarBlue();

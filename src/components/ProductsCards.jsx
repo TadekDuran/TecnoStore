@@ -9,16 +9,15 @@ const ProductsCards = ({ products }) => {
           <Link key={product._id} href={`/product/${product._id}`}>
             <img
               className="h-4/5 object-contain"
-              src="https://armoto.vtexassets.com/arquivos/ids/165375-800-auto?v=638412646944530000&width=800&height=auto&aspect=true"
+              src={product.imagen[0]}
               alt="Test"
             />
             <div className="h-1/5 text-center">
-              <p>{product.fabricante} {product.modelo}</p>
+            {product.fabricante == "Apple" ? <p>{product.modelo}</p> : <p>{product.fabricante} {product.modelo}</p>}
               <p>${product.precio} USD</p>
             </div>
           </Link>
         </div>
-
       ))}
     </div>
   );

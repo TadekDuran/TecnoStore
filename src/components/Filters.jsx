@@ -33,6 +33,18 @@ const Filters = ({ fetchProducts, categoria }) => {
       id: 3,
       value: "Xiaomi",
     },
+    {
+      id: 4,
+      value: "Apple",
+    },
+    {
+      id: 5,
+      value: "ULEFONE"
+    },
+    {
+      id: 6,
+      value: "Infinix"
+    }
   ];
 
   const storage = [
@@ -89,7 +101,7 @@ const Filters = ({ fetchProducts, categoria }) => {
     })
     const defaultQuery = `categoria=${categoria}`;
     setQueries(defaultQuery);
-    
+
     fetchProducts(defaultQuery);
   }
 

@@ -30,6 +30,10 @@ const ProductSchema = new mongoose.Schema(
         stock: {
             type: Boolean,
             default: true
+        },
+        imagen: {
+            type: Array,
+            required: false
         }
     },
     {

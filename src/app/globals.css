@@ -39,3 +39,8 @@ body::-webkit-scrollbar-thumb {
 .image-gallery-thumbnail, .image-gallery-thumbnail-image  {
   border-radius: 10%;
 }
+
+.image-gallery-image{
+  width: 400px;
+  height: 400px;
+}
