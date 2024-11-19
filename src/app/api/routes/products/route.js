@@ -6,39 +6,45 @@ export async function GET(request) {
   try {
     await connectDB();
     const searchParams = request.nextUrl.searchParams;
-    const category = searchParams.get("categoria");
-    const fabricante = searchParams.get("fabricante");
-    const precioMin = searchParams.get("precioMin");
-    const precioMax = searchParams.get("precioMax");
-    const caracteristicaNombres = searchParams.getAll("nombreCaracteristica");
-    const caracteristicaValores = searchParams.getAll("valorCaracteristica");
-    const destacado = searchParams.get("destacado")
-    const modelo = searchParams.get("modelo")
+    const category = searchParams.get("category");
+    const maker = searchParams.get("maker");
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
+    const featureName = searchParams.getAll("featureName");
+    const featureValue = searchParams.getAll("featureValue");
+    const highlight = searchParams.get("highlight")
+    const model = searchParams.get("model");
+    const currentPage = searchParams.get("currentPage");
+    const limit = searchParams.get("amountProducts");
     let query = {};
-    if (category) 
-      query.categoria = category;
-    if (fabricante) 
-      query.fabricante = fabricante;
-    if (precioMin)
-      query.precio = { ...query.precio, $gte: parseInt(precioMin) };
-    if (precioMax)
-      query.precio = { ...query.precio, $lte: parseInt(precioMax) };
-    if (caracteristicaNombres.length && caracteristicaValores.length) {
-      query.caracteristicas = {
-        $all: caracteristicaNombres.map((nombre, index) => ({
+    if (category)
+      query.category = category;
+    if (maker)
+      query.maker = maker;
+    if (minPrice)
+      query.price = { ...query.price, $gte: parseInt(minPrice) };
+    if (maxPrice)
+      query.price = { ...query.price, $lte: parseInt(maxPrice) };
+    if (featureName.length && featureValue.length) {
+      query.features = {
+        $all: featureName.map((name, index) => ({
           $elemMatch: {
-            nombre: nombre,
-            valor: caracteristicaValores[index]
+            name: name,
+            value: featureValue[index]
           }
         }))
       };
     }
-    if(destacado) 
-      query.destacado = destacado;
-    if(modelo)
-      query.modelo = { $regex: modelo, $options: "i" };
-    const products = await Product.find(query);
-    return new Response(JSON.stringify(products), {
+    if (highlight)
+      query.highlight = highlight;
+    if (model)
+      query.model = { $regex: model, $options: "i" };
+
+    const totalProducts = await Product.find(query);
+    const totalPages = Math.ceil(totalProducts.length / limit)
+    const filteredProducts = await Product.find(query).skip((currentPage - 1) * limit).limit(limit).sort({ "precio": -1 });
+
+    return new Response(JSON.stringify({ totalPages: Number(totalPages), currentPage: Number(currentPage), products: filteredProducts }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +91,7 @@ export async function getData(queries) {
 export async function getHighlights() {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products?destacado=true`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/routes/products?highlight=true`,
     );
     if (!res.ok) {
       throw new Error("Failed to fetch data");

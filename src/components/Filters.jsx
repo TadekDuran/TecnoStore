@@ -11,14 +11,13 @@ import {
   IconButton,
 } from "@mui/joy";
 
-const Filters = ({ fetchProducts, categoria }) => {
+const Filters = ({ fetchProducts, queryParams }) => {
   const [filterList, setFilterList] = useState({
     searchTerm: "",
     price: { min: 0, max: "" },
-    fabricante: "",
-    almacenamiento: ""
+    maker: "",
+    storage: ""
   });
-  const [queries, setQueries] = useState(`categoria=${categoria}`);
 
   const brands = [
     {
@@ -71,13 +70,13 @@ const Filters = ({ fetchProducts, categoria }) => {
   ];
 
   useEffect(() => {
-    let { fabricante, almacenamiento, searchTerm, price: { min: minPrice, max: maxPrice } } = filterList;
+    let { maker, storage, searchTerm, price: { min: minPrice, max: maxPrice } } = filterList;
 
-    let newQueries = `categoria=${categoria}`;
-    if (fabricante) newQueries += `&fabricante=${fabricante}`;
+    let newQueries = `category=${queryParams.category}&currentPage=${data.currentPage}&amountProducts=${amountProducts}`;
+    if (maker) newQueries += `&maker=${maker}`;
     if (minPrice) newQueries += `&precioMin=${minPrice}`;
     if (maxPrice) newQueries += `&precioMax=${maxPrice}`;
-    if (almacenamiento) newQueries += `&nombreCaracteristica=Almacenamiento&valorCaracteristica=${almacenamiento}`;
+    if (storage) newQueries += `&nombreCaracteristica=storage&valorCaracteristica=${storage}`;
     if (searchTerm) newQueries += `&modelo=${searchTerm}`;
 
     if (newQueries !== queries) {
@@ -86,7 +85,7 @@ const Filters = ({ fetchProducts, categoria }) => {
   }, [filterList]);
 
   useEffect(() => {
-    if (queries !== `categoria=${categoria}`) {
+    if (queries !== `category=${category}`) {
       fetchProducts(queries);
     }
   }, [queries]);
@@ -96,10 +95,10 @@ const Filters = ({ fetchProducts, categoria }) => {
     setFilterList({
       searchTerm: "",
       price: { min: 0, max: "" },
-      fabricante: "",
-      almacenamiento: ""
+      maker: "",
+      storage: ""
     })
-    const defaultQuery = `categoria=${categoria}`;
+    const defaultQuery = `category=${category}`;
     setQueries(defaultQuery);
 
     fetchProducts(defaultQuery);
@@ -124,11 +123,11 @@ const Filters = ({ fetchProducts, categoria }) => {
         <Select
           size="sm"
           placeholder="Selecciona un fabricante"
-          value={filterList.fabricante}
+          value={filterList.maker}
           onChange={(e, newValue) =>
             setFilterList((prevState) => ({
               ...prevState,
-              fabricante: newValue,
+              maker: newValue,
             }))
           }
         >
@@ -197,11 +196,11 @@ const Filters = ({ fetchProducts, categoria }) => {
         <Select
           size="sm"
           placeholder="Selecciona un almacenamiento"
-          value={filterList.almacenamiento}
+          value={filterList.storage}
           onChange={(e, newValue) =>
             setFilterList((prevState) => ({
               ...prevState,
-              almacenamiento: newValue,
+              storage: newValue,
             }))
           }
         >
