@@ -7,17 +7,17 @@ export async function PATCH() {
     // Conectar a la base de datos
     await connectDB();
 
-    // Actualizar todos los documentos para reemplazar `categoria` por `category`
+    // Actualizar todos los documentos para reemplazar `imagen` por `image`
     const result = await Product.updateMany(
-      { categoria: { $exists: true } }, // Solo documentos que tienen `categoria`
+      { imagen: { $exists: true } }, // Solo documentos que tienen `imagen`
       [
         {
           $set: {
-            category: "$categoria", // Crear `category` con el valor de `categoria`
+            image: "$imagen", // Crear `image` con el valor de `imagen`
           },
         },
         {
-          $unset: "categoria", // Eliminar la propiedad `categoria`
+          $unset: "imagen", // Eliminar la propiedad `imagen`
         },
       ],
     );
@@ -25,7 +25,7 @@ export async function PATCH() {
     // Retornar el resultado
     return new Response(
       JSON.stringify({
-        message: "Categoría actualizada a category con éxito",
+        message: "imagen actualizada a image con éxito",
         matchedCount: result.matchedCount,
         modifiedCount: result.modifiedCount,
       }),
@@ -37,9 +37,9 @@ export async function PATCH() {
       },
     );
   } catch (error) {
-    console.error("Error actualizando categorías:", error);
+    console.error("Error actualizando imagen:", error);
     return new Response(
-      JSON.stringify({ message: "Error actualizando categorías" }),
+      JSON.stringify({ message: "Error actualizando imagen" }),
       {
         status: 500,
         headers: {

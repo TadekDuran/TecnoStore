@@ -6,23 +6,23 @@ const ProductSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        modelo: {
+        model: {
             type: String,
             required: true,
         },
-        precio: {
+        price: {
             type: Number,
             required: true,
         },
-        fabricante: {
+        maker: {
             type: String,
             required: true,
         },
-        caracteristicas: {
+        features: {
             type: Array,
             required: false,
         },
-        destacado: {
+        highlight: {
             type: Boolean,
             required: false,
             default: false,
@@ -31,7 +31,7 @@ const ProductSchema = new mongoose.Schema(
             type: Boolean,
             default: true
         },
-        imagen: {
+        image: {
             type: Array,
             required: false
         }
@@ -42,9 +42,9 @@ const ProductSchema = new mongoose.Schema(
 );
 
 ProductSchema.post("save", async function () {
-    const baseModelo = this.modelo.replace(/\b\d+(GB|TB|MB|RAM)\b/g, '').trim(); // El modelo base sin características
+    const baseModel = this.model.replace(/\b\d+(GB|TB|MB|RAM)\b/g, '').trim(); // El model base sin características
     const productosConMismoModelo = await mongoose.model("Product").aggregate([
-        { $match: { modelo: { $regex: `^${baseModelo}` }, categoria: this.categoria } },
+        { $match: { model: { $regex: `^${baseModel}` }, category: this.category } },
         {
             $group: {
                 _id: null,
@@ -52,43 +52,43 @@ ProductSchema.post("save", async function () {
                 count: { $sum: 1 },
             },
         },
-        { $match: { count: { $gt: 1 } } }, // Solo si hay más de un producto con el mismo modelo base
+        { $match: { count: { $gt: 1 } } }, // Solo si hay más de un producto con el mismo model base
     ]);
 
     if (productosConMismoModelo.length > 0) {
         const grupoProductos = productosConMismoModelo[0].productos;
 
         // Identificar todas las características comunes entre los productos
-        const todasLasCaracteristicas = grupoProductos[0].caracteristicas.map(
-            (caracteristica) => caracteristica.nombre
+        const todasLasCaracteristicas = grupoProductos[0].features.map(
+            (feature) => feature.name
         );
 
-        const caracteristicasUnicas = todasLasCaracteristicas.filter((nombreCaracteristica) => {
+        const caracteristicasUnicas = todasLasCaracteristicas.filter((featureName) => {
             const valoresCaracteristica = grupoProductos.map((producto) => {
-                const caracteristica = producto.caracteristicas.find(
-                    (caract) => caract.nombre === nombreCaracteristica
+                const feature = producto.features.find(
+                    (feature) => feature.name === featureName
                 );
-                return caracteristica ? caracteristica.valor : null;
+                return feature ? feature.value : null;
             });
-            return new Set(valoresCaracteristica).size > 1; // Solo características con más de un valor
+            return new Set(valoresCaracteristica).size > 1; // Solo características con más de un value
         });
 
-        // Actualizar el modelo de cada producto con las características únicas
+        // Actualizar el model de cada producto con las características únicas
         for (const producto of grupoProductos) {
-            const valoresUnicos = caracteristicasUnicas.map((nombreCaracteristica) => {
-                const caracteristica = producto.caracteristicas.find(
-                    (caract) => caract.nombre === nombreCaracteristica
+            const uniqueValues = caracteristicasUnicas.map((featureName) => {
+                const feature = producto.features.find(
+                    (feature) => feature.name === featureName
                 );
-                return caracteristica ? caracteristica.valor : "";
+                return feature ? feature.value : "";
             });
 
-            const nuevoModelo = `${baseModelo} ${valoresUnicos.filter(Boolean).join(" / ")}`;
+            const newModel = `${baseModel} ${uniqueValues.filter(Boolean).join(" / ")}`;
 
-            // Si el modelo no contiene las características únicas, actualizamos el producto
-            if (producto.modelo !== nuevoModelo && valoresUnicos.some(Boolean)) {
+            // Si el model no contiene las características únicas, actualizamos el producto
+            if (producto.model !== newModel && uniqueValues.some(Boolean)) {
                 await mongoose.model("Product").updateOne(
                     { _id: producto._id },
-                    { $set: { modelo: nuevoModelo } }
+                    { $set: { model: newModel } }
                 );
             }
         }

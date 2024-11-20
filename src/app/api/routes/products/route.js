@@ -42,7 +42,7 @@ export async function GET(request) {
 
     const totalProducts = await Product.find(query);
     const totalPages = Math.ceil(totalProducts.length / limit)
-    const filteredProducts = await Product.find(query).skip((currentPage - 1) * limit).limit(limit).sort({ "precio": -1 });
+    const filteredProducts = await Product.find(query).skip((currentPage - 1) * limit).limit(limit).sort({ "price": -1 });
 
     return new Response(JSON.stringify({ totalPages: Number(totalPages), currentPage: Number(currentPage), products: filteredProducts }), {
       status: 200,
